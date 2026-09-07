@@ -20,7 +20,6 @@ const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
 let usuarioActual = null;
-let rolActual = 'lector';
 let cuentasRef = null;
 let unsubscribeCuentas = null;
 let allAccounts = [];
@@ -39,32 +38,6 @@ const userEmail = document.getElementById('user-email');
 const loginError = document.getElementById('login-error');
 const btnLoginGoogle = document.getElementById('btn-login-google');
 const btnLogout = document.getElementById('btn-logout');
-
-const puedeCrearCuentas = () => {
-    return ['admin', 'operador'].includes(rolActual);
-};
-
-const puedeRenovarCuentas = () => {
-    return ['admin', 'operador'].includes(rolActual);
-};
-
-const puedeEliminarCuentas = () => {
-    return rolActual === 'admin';
-};
-
-const aplicarPermisosEnInterfaz = () => {
-    const puedeCrear = puedeCrearCuentas();
-    const puedeRenovar = puedeRenovarCuentas();
-    const puedeEliminar = puedeEliminarCuentas();
-
-    document.getElementById('btn-agregar-usuario').hidden = !puedeCrear;
-
-    document.querySelectorAll('.btn-add-time').forEach((btn) => {
-        btn.hidden = !puedeRenovar;
-    });
-
-    document.getElementById('btn-delete-user').hidden = !puedeEliminar;
-};
 
 const calcularFechaVencimiento = (fechaInicio, meses) => {
     const vencimiento = new Date(fechaInicio);
@@ -186,17 +159,10 @@ const crearPerfilSiNoExiste = async (usuario) => {
             uid: usuario.uid,
             email: usuario.email || '',
             nombre: usuario.displayName || '',
-            rol: 'lector',
             creadoEn: firebase.firestore.FieldValue.serverTimestamp(),
             actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
         });
-
-        return 'lector';
     }
-
-    const datos = perfil.data();
-
-    return datos.rol || 'lector';
 };
 
 const escaparHtml = (texto = '') => {
@@ -342,11 +308,6 @@ const cargarCuentas = () => {
 };
 
 const agregarCuenta = async (data) => {
-    if (!puedeCrearCuentas()) {
-        alert('No tienes permiso para crear cuentas.');
-        return;
-    }
-
     if (!usuarioActual || !cuentasRef) {
         alert('Debes iniciar sesión antes de registrar una cuenta.');
         return;
@@ -397,11 +358,6 @@ const agregarCuenta = async (data) => {
 };
 
 const eliminarCuenta = async (firebaseId) => {
-    if (!puedeEliminarCuentas()) {
-        alert('No tienes permiso para eliminar cuentas.');
-        return;
-    }
-
     if (!cuentasRef || !usuarioActual) {
         return;
     }
@@ -417,11 +373,6 @@ const eliminarCuenta = async (firebaseId) => {
 };
 
 const agregarTiempo = async (firebaseId, mesesAAgregar) => {
-    if (!puedeRenovarCuentas()) {
-        alert('No tienes permiso para renovar cuentas.');
-        return;
-    }
-
     if (!cuentasRef || !usuarioActual) {
         return;
     }
@@ -479,7 +430,6 @@ const openAccionesModal = (accountData) => {
     document.getElementById('acciones-account-info').textContent =
         `${accountData.id} - ${accountData.email}`;
 
-    aplicarPermisosEnInterfaz();
     modalAcciones.style.display = 'block';
 };
 
@@ -521,11 +471,6 @@ const inicializarEventos = () => {
     document.getElementById('filter-estado').addEventListener('change', applyFilters);
 
     document.getElementById('btn-agregar-usuario').addEventListener('click', () => {
-        if (!puedeCrearCuentas()) {
-            alert('No tienes permiso para crear cuentas.');
-            return;
-        }
-
         modalRegistro.style.display = 'block';
     });
 
@@ -574,11 +519,6 @@ const inicializarEventos = () => {
     });
 
     document.getElementById('btn-delete-user').addEventListener('click', () => {
-        if (!puedeEliminarCuentas()) {
-            alert('No tienes permiso para eliminar cuentas.');
-            return;
-        }
-
         if (!currentAccountData) {
             return;
         }
@@ -611,7 +551,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!usuario) {
                 usuarioActual = null;
-                rolActual = 'lector';
                 cuentasRef = null;
                 mostrarLogin();
                 return;
@@ -619,7 +558,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             try {
                 usuarioActual = usuario;
-                rolActual = await crearPerfilSiNoExiste(usuario);
+                await crearPerfilSiNoExiste(usuario);
 
                 cuentasRef = db
                     .collection('usuarios')
@@ -627,10 +566,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     .collection('cuentas');
 
                 mostrarApp(usuario);
-                aplicarPermisosEnInterfaz();
                 cargarCuentas();
             } catch (error) {
                 console.error('Error al preparar la sesión:', error);
+
                 loginError.textContent =
                     'La sesión inició, pero no se pudo preparar tu espacio privado.';
 
