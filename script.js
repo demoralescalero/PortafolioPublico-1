@@ -194,13 +194,9 @@ const crearPerfilSiNoExiste = async (usuario) => {
         return 'lector';
     }
 
-    await perfilRef.update({
-        email: usuario.email || '',
-        nombre: usuario.displayName || '',
-        actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    const datos = perfil.data();
 
-    return perfil.data().rol || 'lector';
+    return datos.rol || 'lector';
 };
 
 const escaparHtml = (texto = '') => {
