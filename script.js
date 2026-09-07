@@ -146,7 +146,7 @@ const crearPerfilSiNoExiste = async (usuario) => {
         email: usuario.email || '',
         nombre: usuario.displayName || '',
         actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+    }, { merge: true rol: 'lector'});
 };
 
 const escaparHtml = (texto = '') => {
