@@ -32,6 +32,7 @@ const formRegistro = document.getElementById('form-registro');
 const tbody = document.getElementById('accounts-body');
 
 const loginScreen = document.getElementById('login-screen');
+const loadingScreen = document.getElementById('loading-screen');
 const app = document.getElementById('app');
 const userBar = document.getElementById('user-bar');
 const userEmail = document.getElementById('user-email');
@@ -150,18 +151,29 @@ const cerrarModales = () => {
     modalAcciones.style.display = 'none';
 };
 
+const mostrarCargando = () => {
+    loadingScreen.hidden = false;
+    loginScreen.hidden = true;
+    app.hidden = true;
+    userBar.hidden = true;
+};
+
 const mostrarLogin = () => {
+    loadingScreen.hidden = true;
     loginScreen.hidden = false;
     app.hidden = true;
     userBar.hidden = true;
+
     cerrarModales();
     limpiarTablaYContadores();
 };
 
 const mostrarApp = (usuario) => {
+    loadingScreen.hidden = true;
     loginScreen.hidden = true;
     app.hidden = false;
     userBar.hidden = false;
+
     userEmail.textContent = usuario.email || 'Usuario autenticado';
 };
 
@@ -585,42 +597,52 @@ const inicializarEventos = () => {
     });
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    mostrarCargando();
     inicializarEventos();
 
-    auth.onAuthStateChanged(async (usuario) => {
-        if (unsubscribeCuentas) {
-            unsubscribeCuentas();
-            unsubscribeCuentas = null;
-        }
+    try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-        allAccounts = [];
-        currentAccountData = null;
+        auth.onAuthStateChanged(async (usuario) => {
+            if (unsubscribeCuentas) {
+                unsubscribeCuentas();
+                unsubscribeCuentas = null;
+            }
 
-        if (!usuario) {
-            usuarioActual = null;
-            rolActual = 'lector';
-            cuentasRef = null;
-            mostrarLogin();
-            return;
-        }
+            allAccounts = [];
+            currentAccountData = null;
 
-        try {
-            usuarioActual = usuario;
-            rolActual = await crearPerfilSiNoExiste(usuario);
+            if (!usuario) {
+                usuarioActual = null;
+                rolActual = 'lector';
+                cuentasRef = null;
+                mostrarLogin();
+                return;
+            }
 
-            cuentasRef = db
-                .collection('usuarios')
-                .doc(usuario.uid)
-                .collection('cuentas');
+            try {
+                usuarioActual = usuario;
+                rolActual = await crearPerfilSiNoExiste(usuario);
 
-            mostrarApp(usuario);
-            aplicarPermisosEnInterfaz();
-            cargarCuentas();
-        } catch (error) {
-            console.error('Error al preparar la sesión:', error);
-            loginError.textContent = 'La sesión inició, pero no se pudo preparar tu espacio privado.';
-            await auth.signOut();
-        }
-    });
+                cuentasRef = db
+                    .collection('usuarios')
+                    .doc(usuario.uid)
+                    .collection('cuentas');
+
+                mostrarApp(usuario);
+                aplicarPermisosEnInterfaz();
+                cargarCuentas();
+            } catch (error) {
+                console.error('Error al preparar la sesión:', error);
+                loginError.textContent =
+                    'La sesión inició, pero no se pudo preparar tu espacio privado.';
+
+                await auth.signOut();
+            }
+        });
+    } catch (error) {
+        console.error('No se pudo configurar la persistencia:', error);
+        mostrarLogin();
+    }
 });
