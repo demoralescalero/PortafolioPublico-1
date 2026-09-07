@@ -140,13 +140,28 @@ const mostrarApp = (usuario) => {
 
 const crearPerfilSiNoExiste = async (usuario) => {
     const perfilRef = db.collection('usuarios').doc(usuario.uid);
+    const perfil = await perfilRef.get();
 
-    await perfilRef.set({
-        uid: usuario.uid,
+    if (!perfil.exists) {
+        await perfilRef.set({
+            uid: usuario.uid,
+            email: usuario.email || '',
+            nombre: usuario.displayName || '',
+            rol: 'lector',
+            creadoEn: firebase.firestore.FieldValue.serverTimestamp(),
+            actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        return 'lector';
+    }
+
+    await perfilRef.update({
         email: usuario.email || '',
         nombre: usuario.displayName || '',
         actualizadoEn: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true rol: 'lector'});
+    });
+
+    return perfil.data().rol || 'lector';
 };
 
 const escaparHtml = (texto = '') => {
