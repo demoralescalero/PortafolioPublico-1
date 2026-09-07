@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Monitor de Cuentas Activas</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+
+<body>
+
+    <!-- Barra visible únicamente después de iniciar sesión -->
+    <div id="user-bar" class="user-bar" hidden>
+        <span id="user-email"></span>
+        <button id="btn-logout" class="btn btn-secondary" type="button">
+            Cerrar sesión
+        </button>
+    </div>
+
+    <!-- Pantalla inicial de acceso -->
+    <section id="login-screen" class="login-screen">
+        <div class="login-card">
+            <p class="eyebrow">Portfolio project</p>
+
+            <h1>Monitor de Cuentas Activas</h1>
+
+            <p>
+                Panel demostrativo de gestión de cuentas con autenticación,
+                datos privados por usuario y sincronización en tiempo real
+                mediante Firebase.
+            </p>
+
+            <button id="btn-login-google" class="btn btn-primary" type="button">
+                Iniciar sesión con Google
+            </button>
+
+            <p id="login-error" class="form-message" aria-live="polite"></p>
+        </div>
+    </section>
+
+    <!-- Aplicación: se muestra únicamente cuando haya sesión -->
+    <main id="app" hidden>
+
+        <header class="header">
+            <h1>Monitor de Cuentas Activas</h1>
+            <p>
+                Sistema de administración para cuentas con planes
+                de 3, 6 y 12 meses
+            </p>
+        </header>
+
+        <!-- Cards de resumen -->
+        <section class="counters-container">
+            <div class="card total">
+                <span>Total Cuentas</span>
+                <div class="value" id="total-cuentas">0</div>
+            </div>
+
+            <div class="card activas">
+                <span>Activas</span>
+                <div class="value" id="activas-cuentas">
+                    0 <span class="icon">✅</span>
+                </div>
+            </div>
+
+            <div class="card por-vencer">
+                <span>Por Vencer</span>
+                <div class="value" id="por-vencer-cuentas">
+                    0 <span class="icon">⚠️</span>
+                </div>
+            </div>
+
+            <div class="card vencidas">
+                <span>Vencidas</span>
+                <div class="value" id="vencidas-cuentas">
+                    0 <span class="icon">❌</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtros y acción de registro -->
+        <section class="controls">
+            <div class="filters">
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Buscar ID o email de cuenta..."
+                    class="input-field"
+                >
+
+                <select id="filter-plan" class="input-field">
+                    <option value="">Todos los planes</option>
+                    <option value="3">3 meses</option>
+                    <option value="6">6 meses</option>
+                    <option value="12">12 meses</option>
+                </select>
+
+                <select id="filter-estado" class="input-field">
+                    <option value="">Todos los estados</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Por Vencer">Por Vencer</option>
+                    <option value="Vencido">Vencido</option>
+                </select>
+            </div>
+
+            <div class="actions">
+                <button
+                    class="btn btn-primary"
+                    id="btn-agregar-usuario"
+                    type="button"
+                >
+                    Agregar cuenta
+                </button>
+            </div>
+        </section>
+
+        <!-- Tabla de cuentas -->
+        <section class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Plan</th>
+                        <th>Inicio</th>
+                        <th>Vencimiento</th>
+                        <th>Días restantes</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="accounts-body">
+                    <!-- JavaScript agrega las filas -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Modal: crear una cuenta -->
+        <div id="modal-registro" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-content">
+                <button
+                    class="close-btn"
+                    type="button"
+                    aria-label="Cerrar formulario"
+                >
+                    &times;
+                </button>
+
+                <h2>Agregar nueva cuenta</h2>
+
+                <form id="form-registro">
+                    <label for="reg-id">ID de cuenta:</label>
+                    <input type="text" id="reg-id" required>
+
+                    <label for="reg-email">Email:</label>
+                    <input type="email" id="reg-email" required>
+
+                    <label for="reg-fecha">Fecha de inicio:</label>
+                    <input type="date" id="reg-fecha" required>
+
+                    <label for="reg-plan">Plan:</label>
+                    <select id="reg-plan" required>
+                        <option value="3">3 meses</option>
+                        <option value="6">6 meses</option>
+                        <option value="12">12 meses</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">
+                        Guardar cuenta
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: renovar/eliminar cuenta -->
+        <div id="modal-acciones" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-content">
+                <button
+                    class="close-btn"
+                    type="button"
+                    aria-label="Cerrar acciones"
+                >
+                    &times;
+                </button>
+
+                <h2>Acciones de cuenta</h2>
+
+                <p>
+                    Cuenta seleccionada:
+                    <strong id="acciones-account-info"></strong>
+                </p>
+
+                <div class="action-section">
+                    <h3>Agregar tiempo</h3>
+                    <p>
+                        Extiende la duración desde la fecha de vencimiento
+                        actual de la cuenta.
+                    </p>
+
+                    <button
+                        class="btn btn-secondary btn-add-time"
+                        data-meses="3"
+                        type="button"
+                    >
+                        Agregar 3 meses
+                    </button>
+
+                    <button
+                        class="btn btn-secondary btn-add-time"
+                        data-meses="6"
+                        type="button"
+                    >
+                        Agregar 6 meses
+                    </button>
+
+                    <button
+                        class="btn btn-secondary btn-add-time"
+                        data-meses="12"
+                        type="button"
+                    >
+                        Agregar 12 meses
+                    </button>
+                </div>
+
+                <div class="action-section" style="margin-top: 20px;">
+                    <h3>Eliminar cuenta</h3>
+                    <p>
+                        Esta acción eliminará la cuenta de tu espacio privado.
+                    </p>
+
+                    <button
+                        id="btn-delete-user"
+                        class="btn btn-danger"
+                        type="button"
+                    >
+                        Eliminar cuenta
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Script de la aplicación: se carga una única vez -->
+    <script src="script.js"></script>
+</body>
+</html>

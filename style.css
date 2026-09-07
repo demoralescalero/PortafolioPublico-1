@@ -1,0 +1,536 @@
+:root {
+    --color-primary: #5b21b6;
+    --color-secondary: #7e22ce;
+    --color-danger: #ef4444;
+    --color-success: #10b981;
+    --color-warning: #facc15;
+    --color-background: #1f0846;
+    --color-text: #ffffff;
+    --color-card-bg: #4c1d95;
+    --border-radius: 12px;
+}
+
+/* Oculta elementos cuyo atributo HTML es hidden */
+[hidden] {
+    display: none !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* El panel principal debe ocupar todo el ancho disponible */
+#app {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --------------------------------------------------------------- */
+/* Pantalla de autenticación                                       */
+/* --------------------------------------------------------------- */
+
+.login-screen {
+    width: min(100%, 720px);
+    min-height: calc(100vh - 40px);
+    display: grid;
+    place-items: center;
+}
+
+.login-card {
+    width: min(100%, 520px);
+    padding: 36px;
+    border-radius: var(--border-radius);
+    background-color: var(--color-card-bg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    text-align: center;
+}
+
+.login-card h1 {
+    margin: 8px 0 12px;
+    color: #a78bfa;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+}
+
+.login-card p {
+    color: #e5e7eb;
+    line-height: 1.55;
+}
+
+.eyebrow {
+    margin: 0;
+    color: #c4b5fd !important;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.form-message {
+    min-height: 1.4em;
+    margin: 16px 0 0;
+    color: #fca5a5 !important;
+    line-height: 1.4;
+}
+
+/* Barra que muestra el usuario autenticado */
+.user-bar {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: calc(100vw - 32px);
+    padding: 10px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    background: rgba(31, 8, 70, 0.94);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.user-bar span {
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #f5f3ff;
+    font-size: 0.88rem;
+}
+
+/* --------------------------------------------------------------- */
+/* Header                                                          */
+/* --------------------------------------------------------------- */
+
+.header {
+    width: 90%;
+    max-width: 1200px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    margin: 0 0 5px;
+    color: #a78bfa;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+}
+
+.header p {
+    margin: 0;
+    color: #d1d5db;
+}
+
+/* --------------------------------------------------------------- */
+/* Contadores                                                      */
+/* --------------------------------------------------------------- */
+
+.counters-container {
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin-bottom: 30px;
+}
+
+.card {
+    flex: 1;
+    min-width: 0;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    background-color: var(--color-card-bg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.card span {
+    color: #e5e7eb;
+    font-size: 1em;
+}
+
+.card .value {
+    margin-top: 5px;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: bold;
+}
+
+.total .value {
+    color: #a78bfa;
+}
+
+.activas .value {
+    color: var(--color-success);
+}
+
+.por-vencer .value {
+    color: var(--color-warning);
+}
+
+.vencidas .value {
+    color: var(--color-danger);
+}
+
+/* --------------------------------------------------------------- */
+/* Controles, filtros y botones                                    */
+/* --------------------------------------------------------------- */
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    background-color: var(--color-card-bg);
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.input-field {
+    min-height: 40px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+}
+
+.input-field:focus {
+    outline: 2px solid #c4b5fd;
+    outline-offset: 2px;
+}
+
+.input-field::placeholder {
+    color: #c7c7c7;
+}
+
+.controls .filters select {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+}
+
+.controls .filters select option {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    min-height: 40px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.btn:focus-visible {
+    outline: 3px solid #ddd6fe;
+    outline-offset: 2px;
+}
+
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-primary {
+    background-color: var(--color-success);
+    color: var(--color-background);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #10a373;
+}
+
+.btn-secondary {
+    background-color: #4b5563;
+    color: var(--color-text);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: #374151;
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    color: var(--color-text);
+}
+
+.btn-danger:hover:not(:disabled) {
+    background-color: #dc2626;
+}
+
+.btn-success {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+}
+
+/* --------------------------------------------------------------- */
+/* Tabla de datos                                                  */
+/* --------------------------------------------------------------- */
+
+.data-table-container {
+    width: 90%;
+    max-width: 1200px;
+    overflow-x: auto;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    background-color: var(--color-card-bg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.data-table {
+    width: 100%;
+    min-width: 860px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.data-table th {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+    font-size: 0.85em;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.data-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: #1f0846;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.status-Activo {
+    background-color: var(--color-success);
+}
+
+.status-PorVencer {
+    background-color: var(--color-warning);
+}
+
+.status-Vencido {
+    background-color: var(--color-danger);
+    color: #ffffff;
+}
+
+.details-btn {
+    padding: 0;
+    border: none;
+    background: none;
+    color: #c4b5fd;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------- */
+/* Modales                                                         */
+/* --------------------------------------------------------------- */
+
+.modal {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 60px 16px 24px;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+    width: min(100%, 500px);
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    background-color: var(--color-card-bg);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.close-btn {
+    float: right;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #aaaaaa;
+    cursor: pointer;
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.modal-content h2 {
+    margin: 0 0 20px;
+    color: #a78bfa;
+}
+
+.modal-content h3 {
+    color: #e9d5ff;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="date"],
+.modal-content select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #4b5563;
+    border-radius: 8px;
+    outline: none;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    outline: 2px solid #c4b5fd;
+    outline-offset: 2px;
+}
+
+.modal-content button[type="submit"] {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.action-section {
+    padding: 16px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.action-section:first-of-type {
+    border-top: none;
+}
+
+.danger-bg {
+    border: 2px solid var(--color-danger);
+    background-color: #3b071d;
+    text-align: center;
+}
+
+.danger-bg h2 {
+    color: var(--color-danger);
+}
+
+.danger-bg p {
+    margin: 20px 0;
+}
+
+#confirm-input {
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------- */
+/* Responsive                                                       */
+/* --------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+
+    .header,
+    .counters-container,
+    .controls,
+    .data-table-container {
+        width: 100%;
+    }
+
+    .counters-container,
+    .controls {
+        flex-direction: column;
+    }
+
+    .card {
+        width: 100%;
+    }
+
+    .filters,
+    .actions {
+        width: 100%;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    .input-field,
+    .actions .btn {
+        width: 100%;
+    }
+
+    .user-bar {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        justify-content: space-between;
+    }
+
+    .user-bar span {
+        max-width: calc(100vw - 170px);
+    }
+
+    .login-card {
+        padding: 28px 20px;
+    }
+}
