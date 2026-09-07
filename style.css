@@ -10,7 +10,6 @@
     --border-radius: 12px;
 }
 
-/* Oculta elementos cuyo atributo HTML es hidden */
 [hidden] {
     display: none !important;
 }
@@ -20,18 +19,17 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: var(--color-background);
-    color: var(--color-text);
+    min-height: 100vh;
     margin: 0;
     padding: 20px;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: Arial, sans-serif;
 }
 
-/* El panel principal debe ocupar todo el ancho disponible */
 #app {
     width: 100%;
     display: flex;
@@ -39,9 +37,7 @@ body {
     align-items: center;
 }
 
-/* --------------------------------------------------------------- */
-/* Pantalla de autenticación                                       */
-/* --------------------------------------------------------------- */
+/* Pantalla de autenticación */
 
 .login-screen {
     width: min(100%, 720px);
@@ -86,12 +82,13 @@ body {
     line-height: 1.4;
 }
 
-/* Barra que muestra el usuario autenticado */
+/* Usuario autenticado */
+
 .user-bar {
     position: fixed;
+    z-index: 1100;
     top: 16px;
     right: 16px;
-    z-index: 1100;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -106,21 +103,19 @@ body {
 .user-bar span {
     max-width: 230px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     color: #f5f3ff;
     font-size: 0.88rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* --------------------------------------------------------------- */
-/* Header                                                          */
-/* --------------------------------------------------------------- */
+/* Encabezado */
 
 .header {
     width: 90%;
     max-width: 1200px;
-    text-align: center;
     margin-bottom: 40px;
+    text-align: center;
 }
 
 .header h1 {
@@ -134,15 +129,13 @@ body {
     color: #d1d5db;
 }
 
-/* --------------------------------------------------------------- */
-/* Contadores                                                      */
-/* --------------------------------------------------------------- */
+/* Contadores */
 
 .counters-container {
-    display: flex;
-    gap: 20px;
     width: 90%;
     max-width: 1200px;
+    display: flex;
+    gap: 20px;
     margin-bottom: 30px;
 }
 
@@ -183,17 +176,15 @@ body {
     color: var(--color-danger);
 }
 
-/* --------------------------------------------------------------- */
-/* Controles, filtros y botones                                    */
-/* --------------------------------------------------------------- */
+/* Controles y botones */
 
 .controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
     width: 90%;
     max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
     margin-bottom: 30px;
     padding: 20px;
     border-radius: var(--border-radius);
@@ -296,9 +287,7 @@ body {
     color: var(--color-text);
 }
 
-/* --------------------------------------------------------------- */
-/* Tabla de datos                                                  */
-/* --------------------------------------------------------------- */
+/* Tabla */
 
 .data-table-container {
     width: 90%;
@@ -367,9 +356,7 @@ body {
     text-decoration: underline;
 }
 
-/* --------------------------------------------------------------- */
-/* Modales                                                         */
-/* --------------------------------------------------------------- */
+/* Modales */
 
 .modal {
     position: fixed;
@@ -460,88 +447,7 @@ body {
     border-top: none;
 }
 
-.danger-bg {
-    border: 2px solid var(--color-danger);
-    background-color: #3b071d;
-    text-align: center;
-}
-
-.danger-bg h2 {
-    color: var(--color-danger);
-}
-
-.danger-bg p {
-    margin: 20px 0;
-}
-
-#confirm-input {
-    margin-bottom: 20px;
-    font-size: 1.2em;
-    text-align: center;
-}
-
-/* --------------------------------------------------------------- */
-/* Responsive                                                       */
-/* --------------------------------------------------------------- */
-
-@media (max-width: 768px) {
-    body {
-        padding: 16px;
-    }
-
-    .header,
-    .counters-container,
-    .controls,
-    .data-table-container {
-        width: 100%;
-    }
-
-    .counters-container,
-    .controls {
-        flex-direction: column;
-    }
-
-    .card {
-        width: 100%;
-    }
-
-    .filters,
-    .actions {
-        width: 100%;
-    }
-
-    .filters {
-        flex-direction: column;
-    }
-
-    .input-field,
-    .actions .btn {
-        width: 100%;
-    }
-
-    .user-bar {
-        top: 10px;
-        right: 10px;
-        left: 10px;
-        justify-content: space-between;
-    }
-
-    .user-bar span {
-        max-width: calc(100vw - 170px);
-    }
-
-    .login-card {
-        padding: 28px 20px;
-    }
-}
-/* --------------------------------------------------------------- */
-/* Pantalla de carga de Firebase                                   */
-/* --------------------------------------------------------------- */
-
-/* Garantiza que cualquier elemento con atributo hidden no se muestre */
-[hidden] {
-    display: none !important;
-}
+/* Pantalla de carga */
 
 .loading-screen {
     width: 100%;
@@ -578,5 +484,52 @@ body {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+
+    .header,
+    .counters-container,
+    .controls,
+    .data-table-container {
+        width: 100%;
+    }
+
+    .counters-container,
+    .controls {
+        flex-direction: column;
+    }
+
+    .card,
+    .filters,
+    .actions,
+    .input-field,
+    .actions .btn {
+        width: 100%;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    .user-bar {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        justify-content: space-between;
+    }
+
+    .user-bar span {
+        max-width: calc(100vw - 170px);
+    }
+
+    .login-card {
+        padding: 28px 20px;
     }
 }
