@@ -19,17 +19,23 @@
     <!-- Barra visible únicamente después de iniciar sesión -->
     <div id="user-bar" class="user-bar" hidden>
         <span id="user-email"></span>
+
         <button id="btn-logout" class="btn btn-secondary" type="button">
             Cerrar sesión
         </button>
     </div>
 
+    <!-- Visible mientras Firebase verifica o restaura la sesión -->
     <section id="loading-screen" class="loading-screen">
-    <div class="loading-card">
-        <div class="spinner" aria-hidden="true"></div>
-        <p>Verificando sesión...</p>
-    </div>
-</section>
+        <div class="loading-card">
+            <div class="spinner" aria-hidden="true"></div>
+            <p>Verificando sesión...</p>
+        </div>
+    </section>
+
+    <!-- Se muestra solo si Firebase confirma que no hay sesión -->
+    <section id="login-screen" class="login-screen" hidden>
+        <div class="login-card">
 
     <!-- Pantalla inicial de acceso -->
     <section id="login-screen" class="login-screen">
